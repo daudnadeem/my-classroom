@@ -1,54 +1,69 @@
 package com.cognizant.persistence.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
 
 @Entity
 public class Classroom {
-
+	
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	private long classroomID;
+	private long classroomId;
 	private String trainer;
-	@OneToMany
-	private HashMap<Integer,String> trainees = new HashMap<Integer,String>();  
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "traineeId")
+	private List<Trainee> trainees = new ArrayList<>();
+	
 	
 	public Classroom() {
 		
 	}
 	
-	public Classroom(long classroomID, String trainer, HashMap<Integer,String> trainees) {
-		this.classroomID = classroomID;
+	public Classroom(int classroomId, String trainer, List<Trainee> trainees) {
+		this.classroomId = classroomId;
 		this.trainer = trainer;
 		this.trainees = trainees;
 	}
 
-	public long getClassroomID() {
-		return classroomID;
+	public Classroom(String trainer, List<Trainee> trainees) {
+		this.trainer = trainer;
+		this.trainees = trainees;
 	}
 
-	public void setClassroomID(long classroomID) {
-		this.classroomID = classroomID;
+	
+	
+	public long getClassroomId() {
+		return classroomId;
 	}
-
+	public void setClassroomId(long classroomId) {
+		this.classroomId = classroomId;
+	}
 	public String getTrainer() {
 		return trainer;
 	}
-
 	public void setTrainer(String trainer) {
 		this.trainer = trainer;
 	}
-
-	public HashMap<Integer, String> getTrainees() {
+	public List<Trainee> getTrainees() {
 		return trainees;
 	}
-
-	public void setTrainees(HashMap<Integer, String> trainees) {
+	public void setTrainees(List<Trainee> trainees) {
 		this.trainees = trainees;
+	}
+
+	@Override
+	public String toString() {
+		return "Classroom [classroomId=" + classroomId + ", trainer=" + trainer + ", trainees=" + trainees + "]";
 	}
 }

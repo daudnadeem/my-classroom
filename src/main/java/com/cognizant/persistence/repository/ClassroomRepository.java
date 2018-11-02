@@ -5,9 +5,10 @@ import com.cognizant.persistence.domain.Classroom;
 public interface ClassroomRepository {
 	
 	String getAllClassrooms();
-	String createAClassroom(String classroom);
 	String deleteClassroom(long id);
-	String getClassroomByID(long id);
+	String updateClassroom(Classroom cr);
+	String createAClassroom(String classroom);
+	String getClassroomById(long id);
 	
 //	String getAllTrainees();
 //	String getAllTrainers();

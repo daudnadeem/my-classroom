@@ -15,34 +15,34 @@ import javax.transaction.Transactional;
 import com.cognizant.persistence.domain.Classroom;
 import com.cognizant.util.JSONUtil;
 
+
+
+
 @Transactional(SUPPORTS)
 @Default
 public class ClassroomDBRepository implements ClassroomRepository {
+
 
 	@PersistenceContext(unitName = "primary")
 	private EntityManager manager;
 
 	@Inject
-	private JSONUtil util;
-
+	private JSONUtil jsonOb;
+	
 	public String getAllClassrooms() {
-		Query query = manager.createQuery("Select a FROM Classroom a");
+		Query query = manager.createQuery("Select cr FROM Classroom cr");
 		Collection<Classroom> classrooms = (Collection<Classroom>) query.getResultList();
-		return util.getJSONForObject(classrooms);
+		return jsonOb.getJSONForObject(classrooms);
 	}
-
+	
 	@Transactional(REQUIRED)
 	public String createAClassroom(String classroom) {
-		Classroom aClassroom = util.getObjectForJSON(classroom, Classroom.class);
+		Classroom aClassroom = jsonOb.getObjectForJSON(classroom, Classroom.class);
 		manager.persist(aClassroom);
-		return "{\"message\": \"movie has been sucessfully added\"}";
+		return "{\"message\": \"classroom has been sucessfully added\"}";
 	}
-
+	
 	@Transactional(REQUIRED)
-	private Classroom findClassroom(Long id) {
-		return manager.find(Classroom.class, id);
-	}
-
 	public String deleteClassroom(long id) {
 		Classroom classroomInDB = findClassroom(id);
 		if (classroomInDB != null) {
@@ -51,19 +51,28 @@ public class ClassroomDBRepository implements ClassroomRepository {
 		return "{\"message\": \"classroom sucessfully deleted\"}";
 	}
 
-	public String getClassroomByID(long id) {
+	public String getClassroomById(long id) {
 		Classroom classroomInDB = findClassroom(id);
-		return util.getJSONForObject(classroomInDB);
+		return jsonOb.getJSONForObject(classroomInDB);
+	}
+	
+	@Transactional(REQUIRED)
+	public String updateClassroom(Classroom cr) {
+		Classroom classroomInDB = findClassroom(cr.getClassroomId());
+		classroomInDB.setTrainer(cr.getTrainer());
+		classroomInDB.setTrainees(cr.getTrainees());
+		return "{\"message\": \"classroom has been sucessfully updated\"}";
+	}
+	
+	
+	private Classroom findClassroom(long id) {
+		return manager.find(Classroom.class, id);
 	}
 
 
+	public void setManager(EntityManager manager) {
+		this.manager = manager;
+	}
 
-//	public String getAllTrainees() {
-//		return null;
-//	}
-//
-//	public String getAllTrainers() {
-//		return null;
-//	}
 
 }
